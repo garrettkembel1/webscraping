@@ -104,36 +104,54 @@ print(f"Most popular tag: {most_popular}")
 print(f"Total tags used across all quotes: {total}")
 print()
 
-#Plotly
-import plotly.graph_objs as Plotly
+# Plotly
+from plotly.graph_objs import Layout
+from plotly import offline
 
-# Prepare data for the plot
-author_names = list(author_quotes.keys())
-quote_counts = list(author_quotes.values())
 
-# Create a bar chart
-fig = Plotly.Figure(data=[Plotly.Line(x=author_names, y=quote_counts)])
+names = list(author_quotes.keys())
+counts = list(author_quotes.values())
 
-# Customize layout
-fig.update_layout(title='Number of Quotes by Author',
-                  xaxis_title='Author',
-                  yaxis_title='Number of Quotes',
-                  bargap=0.1,  # Gap between bars
-                  )
 
-# Show the plot
-tag_names = list(tag_distribution.keys())
-tag_counts = list(tag_distribution.values())
+data = [{
+    'type': 'bar',
+    'x': names,
+    'y': counts,
+}]
 
-# Create a bar chart
-fig = Plotly.Figure(data=[Plotly.Line(x=tag_names, y=tag_counts)])
 
-# Customize layout
-fig.update_layout(title='Tag Popularity',
-                  xaxis_title='Tag',
-                  yaxis_title='Number of Quotes',
-                  bargap=0.1,  # Gap between bars
-                  )
+layout = Layout(
+    title='Quotes by Author',
+    xaxis=dict(title='Author'),
+    yaxis=dict(title='Number of Quotes')
+)
 
-# Show the plot
-fig.show()
+
+figure = {'data': data, 'layout': layout}
+
+
+offline.plot(figure, filename='quotes.html')
+
+
+
+tags = list(tag_distribution.keys())
+counts = list(tag_distribution.values())
+
+data = [{
+    'type': 'bar',
+    'x': tags,
+    'y': counts,
+}]
+
+
+layout = Layout(
+    title='Tag Popularity',
+    xaxis=dict(title='Tag'),
+    yaxis=dict(title='Number of Quotes')
+)
+
+
+figure = {'data': data, 'layout': layout}
+
+
+offline.plot(figure, filename='tag.html')
