@@ -14,15 +14,15 @@ print(soup.title.text)
 data = soup.find_all('tr')[1:6] 
 
 for i in data:
-    name = i.find('td', class_='col name').text.strip()
+    name = i.find('td',class_='col name').text.strip()
     
-    price = i.find('td', class_='col price').text.strip()
-    percent_change = i.find('td', class_='col change-24h').text.strip()
+    price = i.find('td',class_='col price').text.strip()
+    percent_change = i.find('td',class_='col change-24h').text.strip()
     
     
     price = float(price.replace('$', '').replace(',', ''))
     
-    prev_price = round(price / (1 + float(percent_change.strip('%')) / 100), 2)
+    prev_price = round(price / (1 + float(percent_change.strip('%'))/100),2)
 
     print()
     print(f'Name: {name}')
@@ -37,10 +37,9 @@ for i in data:
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from collections import Counter
-import plotly.graph_objects as Plotly
 
 
-url = 'https://quotes.toscrape.com/page/1/'
+url = 'https://quotes.toscrape.com'
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
 quotes = []
@@ -49,34 +48,40 @@ req = Request(url, headers=headers)
 webpage = urlopen(req).read()
 soup = BeautifulSoup(webpage, 'html.parser')
 
-data = soup.find_all('div', class_='quote')
+data = soup.find_all('div',class_='quote')[0:10]
 
 for i in data:
-    text = i.find('span', class_='text').text.strip()
-    author = i.find('small', class_='author').text.strip()
-    tags = [tag.text.strip() for tag in i.find_all('a', class_='tag')]
+    text = i.find('span',class_='text').text.strip()
+    author = i.find('small',class_='author').text.strip()
+    tags = [tag.text.strip() for tag in i.find_all('a',class_='tag')]
 
     quotes.append({'text': text, 'author': author, 'tags': tags})
 
 
-author_total = Counter([quote['author'] for quote in quotes])
-most = max(author_total, key=author_total.get)
-least = min(author_total, key=author_total.get)
+author_quotes = Counter([quote['author'] for quote in quotes])
+most = max(author_quotes, key=author_quotes.get)
+least = min(author_quotes, key=author_quotes.get)
 
 print()
 print("Author Statistics:")
 print("Number of quotes by each author:")
-for author, count in author_total.items():
+for author, count in author_quotes.items():
     print(f"{author}: {count}")
 
-print(f"Author with the most quotes: {most} ({author_total[most]} quotes)")
-print(f"Author with the least quotes: {least} ({author_total[least]} quotes)")
-
+print(f"Author with the most quotes: {most} ({author_quotes[most]} quotes)")
+print(f"Author with the least quotes: {least} ({author_quotes[least]} quotes)")
 
 length = [len(quote['text'].split()) for quote in quotes]
-avg = sum(length) / len(length)
-longest = max(quotes, key=lambda quote: len(quote['text']))
-shortest = min(quotes, key=lambda quote: len(quote['text']))
+avg = sum(length)/len(length)
+longest = None
+shortest = None
+
+for i in quotes:
+    text = i['text']
+    if longest is None or len(text) > len(longest['text']):
+        longest = i
+    if shortest is None or len(text) < len(shortest['text']):
+        shortest = i
 
 print()
 print("Quote Analysis:")
@@ -89,7 +94,7 @@ print(shortest['text'])
 
 tags = [tag for quote in quotes for tag in quote['tags']]
 tag_distribution = Counter(tags)
-most_popular = max(tag_distribution, key=tag_distribution.get)
+most_popular = max(tag_distribution,key=tag_distribution.get)
 total = len(tags)
 
 
@@ -100,29 +105,35 @@ print(f"Total tags used across all quotes: {total}")
 print()
 
 #Plotly
-top = author_total.most_common(10)
+import plotly.graph_objs as Plotly
 
+# Prepare data for the plot
+author_names = list(author_quotes.keys())
+quote_counts = list(author_quotes.values())
 
-names = []
-counts = []
-for author, count in top:
-    names.append(author)
-    counts.append(count)
+# Create a bar chart
+fig = Plotly.Figure(data=[Plotly.Line(x=author_names, y=quote_counts)])
 
-figure = Plotly.Figure([Plotly.Bar(x=names, y=counts)])
-figure.update_layout(title='Top 10 Authors and Their Number of Quotes', xaxis_title='Author', yaxis_title='Number of Quotes')
-figure.show()
+# Customize layout
+fig.update_layout(title='Number of Quotes by Author',
+                  xaxis_title='Author',
+                  yaxis_title='Number of Quotes',
+                  bargap=0.1,  # Gap between bars
+                  )
 
+# Show the plot
+tag_names = list(tag_distribution.keys())
+tag_counts = list(tag_distribution.values())
 
-top = tag_distribution.most_common(10)
+# Create a bar chart
+fig = Plotly.Figure(data=[Plotly.Line(x=tag_names, y=tag_counts)])
 
+# Customize layout
+fig.update_layout(title='Tag Popularity',
+                  xaxis_title='Tag',
+                  yaxis_title='Number of Quotes',
+                  bargap=0.1,  # Gap between bars
+                  )
 
-names = []
-counts = []
-for tag, count in top:
-    names.append(tag)
-    counts.append(count)
-
-figure1 = Plotly.Figure([Plotly.Bar(x=names, y=counts)])
-figure1.update_layout(title='Top 10 Tags Based on Popularity', xaxis_title='Tag', yaxis_title='Number of Quotes')
-figure1.show()
+# Show the plot
+fig.show()
