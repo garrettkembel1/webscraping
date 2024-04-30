@@ -52,7 +52,7 @@ for row in rows:
         average_per_theater_formatted = '${:,.2f}'.format(average_per_theater)
     else:
         theaters = 0
-        average_per_theater_formatted = '-'
+        average_per_theater_formatted = 0
 
     # Add data to the Excel worksheet
     worksheet.append([rank, movie, release_date, total_gross_formatted, theaters_text, average_per_theater_formatted])
