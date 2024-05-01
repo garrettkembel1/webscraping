@@ -48,7 +48,7 @@ req = Request(url, headers=headers)
 webpage = urlopen(req).read()
 soup = BeautifulSoup(webpage, 'html.parser')
 
-data = soup.find_all('div',class_='quote')[0:10]
+data = soup.find_all('div',class_='quote')
 
 for i in data:
     text = i.find('span',class_='text').text.strip()
