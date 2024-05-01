@@ -27,9 +27,9 @@ for i in data:
     print()
     print(f'Name: {name}')
     
-    print(f'Price: {price:.2f}')
+    print(f'Price: ${price:.2f}')
     print(f'Percent Change: {percent_change}')
-    print(f'Previous Price: {prev_price:.2f}')
+    print(f'Previous Price: ${prev_price:.2f}')
     
 
 
