@@ -39,23 +39,25 @@ from bs4 import BeautifulSoup
 from collections import Counter
 
 
-url = 'https://quotes.toscrape.com'
+
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
 quotes = []
 
-req = Request(url, headers=headers)
-webpage = urlopen(req).read()
-soup = BeautifulSoup(webpage, 'html.parser')
+for page in range(1, 11):
+    url = f'https://quotes.toscrape.com/page/{page}/'
+    req = Request(url, headers=headers)
+    webpage = urlopen(req).read()
+    soup = BeautifulSoup(webpage, 'html.parser')
 
-data = soup.find_all('div',class_='quote')
+    data = soup.find_all('div',class_='quote')
 
-for i in data:
-    text = i.find('span',class_='text').text.strip()
-    author = i.find('small',class_='author').text.strip()
-    tags = [tag.text.strip() for tag in i.find_all('a',class_='tag')]
+    for i in data:
+        text = i.find('span',class_='text').text.strip()
+        author = i.find('small',class_='author').text.strip()
+        tags = [tag.text.strip() for tag in i.find_all('a',class_='tag')]
 
-    quotes.append({'text': text, 'author': author, 'tags': tags})
+        quotes.append({'text': text, 'author': author, 'tags': tags})
 
 
 author_quotes = Counter([quote['author'] for quote in quotes])
