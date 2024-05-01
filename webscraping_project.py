@@ -20,9 +20,9 @@ for i in data:
     percent_change = i.find('td',class_='col change-24h').text.strip()
     
     
-    price = float(price.replace('$', '').replace(',', ''))
+    price = float(price.replace('$','').replace(',',''))
     
-    prev_price = round(price / (1 + float(percent_change.strip('%'))/100),2)
+    prev_price = round(price / (1+float(percent_change.strip('%'))/100),2)
 
     print()
     print(f'Name: {name}')
@@ -65,32 +65,36 @@ most = max(author_quotes, key=author_quotes.get)
 least = min(author_quotes, key=author_quotes.get)
 
 print()
-print("Author Statistics:")
-print("Number of quotes by each author:")
+print('Author Stats:')
+print('Quotes per Author:')
 for author, count in author_quotes.items():
-    print(f"{author}: {count}")
+    print(f'{author}: {count}')
 
-print(f"Author with the most quotes: {most} ({author_quotes[most]} quotes)")
-print(f"Author with the least quotes: {least} ({author_quotes[least]} quotes)")
+print(f'Author with the most quotes: {most} with {author_quotes[most]} quotes')
+print(f'Author with the least quotes: {least} with {author_quotes[least]} quote(s)')
 
 length = [len(quote['text'].split()) for quote in quotes]
 avg = sum(length)/len(length)
-longest = None
-shortest = None
+longest = 0
+shortest = 0
 
 for i in quotes:
     text = i['text']
-    if longest is None or len(text) > len(longest['text']):
+    if longest == 0 or len(text) > len(longest['text']):
         longest = i
-    if shortest is None or len(text) < len(shortest['text']):
+    if shortest == 0 or len(text) < len(shortest['text']):
         shortest = i
 
 print()
-print("Quote Analysis:")
-print(f"Average length of quotes: {avg:.2f} words")
-print("Longest Quote:")
+print('Quote Statistics:')
+print(f'Average length: {avg:.2f} words')
+print()
+print('Longest Quote:')
+print()
 print(longest['text'])
-print("Shortest Quote:")
+print()
+print('Shortest Quote:')
+print()
 print(shortest['text'])
 
 
@@ -101,9 +105,9 @@ total = len(tags)
 
 
 print()
-print('Tag Statistics:')
-print(f"Most popular tag: {most_popular}")
-print(f"Total tags used across all quotes: {total}")
+print('Tag Numbers:')
+print(f'Most popular tag: {most_popular}')
+print(f'Total tags used: {total}')
 print()
 
 # Plotly
@@ -123,9 +127,9 @@ data = [{
 
 
 layout = Layout(
-    title='Quotes by Author',
+    title='Quotes per Author',
     xaxis=dict(title='Author'),
-    yaxis=dict(title='Number of Quotes')
+    yaxis=dict(title='Quotes')
 )
 
 
@@ -147,9 +151,9 @@ data = [{
 
 
 layout = Layout(
-    title='Tag Popularity',
+    title='Tag Rankings',
     xaxis=dict(title='Tag'),
-    yaxis=dict(title='Number of Quotes')
+    yaxis=dict(title='Quotes')
 )
 
 
