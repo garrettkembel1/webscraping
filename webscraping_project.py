@@ -60,7 +60,7 @@ for page in range(1, 11):
         quotes.append({'text': text, 'author': author, 'tags': tags})
 
 
-author_quotes = Counter([quote['author'] for quote in quotes])
+author_quotes = Counter([i['author'] for i in quotes])
 most = max(author_quotes, key=author_quotes.get)
 least = min(author_quotes, key=author_quotes.get)
 
@@ -70,8 +70,8 @@ print('Quotes per Author:')
 for author, count in author_quotes.items():
     print(f'{author}: {count}')
 
-print(f'Author with the most quotes: {most} with {author_quotes[most]} quotes')
-print(f'Author with the least quotes: {least} with {author_quotes[least]} quote(s)')
+print(f'Most quotes: {most} with {author_quotes[most]} quotes')
+print(f'Least quotes: {least} with {author_quotes[least]} quote(s)')
 
 length = [len(i['text'].split()) for i in quotes]
 avg = sum(length)/len(length)
@@ -99,7 +99,7 @@ print()
 print(shortest['text'])
 
 
-tags = [tag for quote in quotes for tag in quote['tags']]
+tags = [tag for i in quotes for tag in i['tags']]
 tag_distribution = Counter(tags)
 most_popular = max(tag_distribution,key=tag_distribution.get)
 total = len(tags)
