@@ -73,7 +73,7 @@ for author, count in author_quotes.items():
 print(f'Author with the most quotes: {most} with {author_quotes[most]} quotes')
 print(f'Author with the least quotes: {least} with {author_quotes[least]} quote(s)')
 
-length = [len(quote['text'].split()) for quote in quotes]
+length = [len(i['text'].split()) for i in quotes]
 avg = sum(length)/len(length)
 longest = 0
 shortest = 0
@@ -87,6 +87,7 @@ for i in quotes:
 
 print()
 print('Quote Statistics:')
+print()
 print(f'Average length: {avg:.2f} words')
 print()
 print('Longest Quote:')
